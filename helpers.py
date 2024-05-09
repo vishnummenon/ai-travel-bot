@@ -1,4 +1,8 @@
-def get_tournament_venue(tournament):
+from langchain.tools import tool
+
+@tool
+def get_tournament_venue(tournament) -> str:
+    "Get the venue details for a given tournament."
     venue = ""
     if ("2024 kuttim kolum" in tournament.lower()):
         venue = "Kyoto, Japan"
@@ -7,6 +11,18 @@ def get_tournament_venue(tournament):
     elif ("t20 world cup" in tournament.lower()):
         venue = "New York, USA"
     return venue
+
+@tool
+def get_city_weather(city) -> str:
+    "Get the current weather for a given city."
+    weather = ""
+    if (city == "Kyoto"):
+        weather = "Sunny"
+    elif (city == "Beijing"):
+        weather = "Cloudy"
+    elif (city == "New York"):
+        weather = "Rainy"
+    return weather
 
 def get_team_schedule(tournament, team):
     schedule = ["No schedule available for the given team in the given tournament."]
@@ -60,6 +76,23 @@ tools = [
                         }
                     },
                     "required": ["tournament", "team"],
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "get_city_weather",
+                "description": "Get the current weather for a given city.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                         "city": {
+                            "type": "string",
+                            "description": "The name of the city, eg. Kyoto"
+                        }
+                    },
+                    "required": ["city"],
                 },
             },
         }

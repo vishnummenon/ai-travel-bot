@@ -1,3 +1,8 @@
 openai
 python-dotenv
 streamlit
+langchain
+langchain_core
+langchainhub
+langchain_openai
+pydantic

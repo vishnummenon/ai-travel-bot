@@ -3,7 +3,7 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-from helpers import tools, get_team_schedule, get_tournament_venue
+from helpers import tools, get_team_schedule, get_tournament_venue, get_city_weather
 
 load_dotenv()
 
@@ -31,18 +31,20 @@ if prompt := st.chat_input("What's up?"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        stream = client.chat.completions.create(
+        bot = client.chat.completions.create(
             model=st.session_state["openai_model"],
             messages=st.session_state.messages,
             tools=tools,
+            tool_choice="required"
         )
-        message = stream.choices[0].message
+        message = bot.choices[0].message
         tool_calls = message.tool_calls
 
         if tool_calls:
             available_functions = {
                 "get_team_schedule": get_team_schedule,
                 "get_tournament_venue": get_tournament_venue,
+                "get_city_weather": get_city_weather
             }
 
             st.session_state.messages.append({"role": message.role, "tool_calls": tool_calls, "content": str(message.content or '')})
@@ -71,3 +73,5 @@ if prompt := st.chat_input("What's up?"):
         else:
             response = st.markdown(message.content)
             st.session_state.messages.append({"role": "assistant", "content": message.content})
+            
+        st.markdown(st.session_state.messages)

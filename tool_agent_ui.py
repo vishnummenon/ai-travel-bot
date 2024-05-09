@@ -24,7 +24,11 @@ agent_executor = AgentExecutor(agent=agent, tools=tools)
 
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system", "content": "You are a conversational chatbot for a travel agency. Use the available functions to get information if needed. If you do not have enough context or information even from the available function calling, simple reply I do not have enough context"},
+        {"role": "system", "content": """You are a conversational chatbot for a travel agency. Use the available functions to get information if needed. 
+         If you do not have enough context or information even from the available function calling, simple reply I do not have enough context
+         You can answer any travel or visa related user queries. 
+         If the user asks queries on any topic other than travel or visa, you can reply with I am not trained to answer that. """},
+        {"role": "assistant", "content": "Hello! How can I help you today?"}
     ]
 
 for message in st.session_state.messages:
@@ -36,12 +40,12 @@ if _prompt := st.chat_input("What's up?"):
     st.session_state.messages.append({"role": "user", "content": _prompt})
     with st.chat_message("user"):
         st.markdown(_prompt)
-with st.chat_message("assistant"):
-    with st.spinner("Thinking..."):
-        result = agent_executor.invoke({
-            "input": _prompt,
-            "chat_history": st.session_state.messages,
-        })
-        output = result["output"]
-        st.session_state.messages.append({"role": "assistant", "content": output})
-        st.markdown(output)
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            result = agent_executor.invoke({
+                "input": _prompt,
+                "chat_history": st.session_state.messages,
+            })
+            output = result["output"]
+            st.session_state.messages.append({"role": "assistant", "content": output})
+            st.markdown(output)

@@ -22,13 +22,18 @@ agent = create_tool_calling_agent(llm, tools, prompt)
 
 agent_executor = AgentExecutor(agent=agent, tools=tools)
 
+st.set_page_config(page_title="Travelo", page_icon=":airplane:")
+
+st.header("Travelo Chatbot")
+
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "system", "content": """You are a conversational chatbot for a travel agency. Use the available functions to get information if needed. 
          If you do not have enough context or information even from the available function calling, simple reply I do not have enough context
-         You can answer any travel or visa related user queries. 
-         If the user asks queries on any topic other than travel or visa, you can reply with I am not trained to answer that. """},
-        {"role": "assistant", "content": "Hello! How can I help you today?"}
+         You can answer any travel or travel related topics (ex. itinerary, weather conditions, visa process etc) related user queries. 
+         If the user asks queries on any topic other than travel or or travel related topics (ex. itinerary, weather conditions, visa process etc),
+         you can reply with I am not trained to answer that. """},
+        {"role": "assistant", "content": "Hello! How can I help you with your travel plans today?"}
     ]
 
 for message in st.session_state.messages:
